@@ -12,4 +12,4 @@ install:
     - sudo apt-get install libssl-dev libtool
 
 script:
-    - test -z "$TRAVIS_COMMIT_RANGE" || csbuild --git-commit-range "$TRAVIS_COMMIT_RANGE" -c "./buildconf && ./configure --with-openssl --quiet && make -s clean && make -j9 V=0" --git-bisect
+    - test -z "$TRAVIS_COMMIT_RANGE" || csbuild --git-commit-range "$TRAVIS_COMMIT_RANGE" -c "./buildconf && ./configure --with-openssl --quiet && make -s clean && make -j9 V=0" --git-bisect --print-fixed
