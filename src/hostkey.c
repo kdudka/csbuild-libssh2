@@ -66,6 +66,7 @@ hostkey_method_ssh_rsa_init(LIBSSH2_SESSION * session,
     libssh2_rsa_ctx *rsactx;
     const unsigned char *s, *e, *n;
     unsigned long len, e_len, n_len;
+    int ret;
 
     (void) hostkey_data_len;
 
@@ -92,9 +93,11 @@ hostkey_method_ssh_rsa_init(LIBSSH2_SESSION * session,
     s += 4;
     n = s;
 
-    if (_libssh2_rsa_new(&rsactx, e, e_len, n, n_len, NULL, 0,
-                         NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL, 0))
+    ret = _libssh2_rsa_new(&rsactx, e, e_len, n, n_len, NULL, 0,
+                           NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL, 0);
+    if (ret) {
         return -1;
+    }
 
     *abstract = rsactx;
 
@@ -274,6 +277,8 @@ hostkey_method_ssh_dss_init(LIBSSH2_SESSION * session,
     libssh2_dsa_ctx *dsactx;
     const unsigned char *p, *q, *g, *y, *s;
     unsigned long p_len, q_len, g_len, y_len, len;
+    int ret;
+
     (void) hostkey_data_len;
 
     if (*abstract) {
@@ -306,7 +311,11 @@ hostkey_method_ssh_dss_init(LIBSSH2_SESSION * session,
     y = s;
     /* s += y_len; */
 
-    _libssh2_dsa_new(&dsactx, p, p_len, q, q_len, g, g_len, y, y_len, NULL, 0);
+    ret = _libssh2_dsa_new(&dsactx, p, p_len, q, q_len,
+                           g, g_len, y, y_len, NULL, 0);
+    if (ret) {
+        return -1;
+    }
 
     *abstract = dsactx;
 
