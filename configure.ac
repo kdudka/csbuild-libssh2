@@ -132,7 +132,6 @@ AM_CONDITIONAL(OPENSSL, test "$ac_cv_libssl" = "yes")
 AM_CONDITIONAL(WINCNG, test "$ac_cv_libbcrypt" = "yes")
 AM_CONDITIONAL(LIBGCRYPT, test "$ac_cv_libgcrypt" = "yes")
 AM_CONDITIONAL(MBEDTLS, test "$ac_cv_libmbedtls" = "yes")
-AM_CONDITIONAL(OS400QC3, false)
 
 # Check if crypto library was found
 if test "$found_crypto" = "none"; then
@@ -213,6 +212,7 @@ AC_HELP_STRING([--disable-debug],[Disable debug options]),
 [ case "$enable_debug" in
   no)
        AC_MSG_RESULT(no)
+       CPPFLAGS="$CPPFLAGS -DNDEBUG"
        ;;
   *)   AC_MSG_RESULT(yes)
     enable_debug=yes
