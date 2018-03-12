@@ -118,13 +118,13 @@
 
 struct iovec {
     size_t iov_len;
-    void * iov_base;
+    void *iov_base;
 };
 
 static inline int writev(int sock, struct iovec *iov, int nvecs)
 {
     DWORD ret;
-    if (WSASend(sock, (LPWSABUF)iov, nvecs, &ret, 0, NULL, NULL) == 0) {
+    if(WSASend(sock, (LPWSABUF)iov, nvecs, &ret, 0, NULL, NULL) == 0) {
         return ret;
     }
     return -1;
@@ -649,7 +649,7 @@ struct _LIBSSH2_SESSION
 #ifdef LIBSSH2DEBUG
     int showmask;               /* what debug/trace messages to display */
     libssh2_trace_handler_func tracehandler; /* callback to display trace messages */
-    void* tracehandler_context; /* context for the trace handler */
+    void *tracehandler_context; /* context for the trace handler */
 #endif
 
     /* State variables used in libssh2_banner_send() */
@@ -1064,16 +1064,39 @@ int _libssh2_pem_decode_integer(unsigned char **data, unsigned int *datalen,
                                 unsigned char **i, unsigned int *ilen);
 
 /* global.c */
-void _libssh2_init_if_needed (void);
+void _libssh2_init_if_needed(void);
 
 
 #define ARRAY_SIZE(a) (sizeof ((a)) / sizeof ((a)[0]))
 
 /* define to output the libssh2_int64_t type in a *printf() */
-#if defined( __BORLANDC__ ) || defined( _MSC_VER ) || defined( __MINGW32__ )
+#if defined(__BORLANDC__) || defined(_MSC_VER) || defined(__MINGW32__)
 #define LIBSSH2_INT64_T_FORMAT "I64d"
 #else
 #define LIBSSH2_INT64_T_FORMAT "lld"
+#endif
+
+/* In Windows the default file mode is text but an application can override it.
+Therefore we specify it explicitly. https://github.com/curl/curl/pull/258
+*/
+#if defined(WIN32) || defined(MSDOS)
+#define FOPEN_READTEXT "rt"
+#define FOPEN_WRITETEXT "wt"
+#define FOPEN_APPENDTEXT "at"
+#elif defined(__CYGWIN__)
+/* Cygwin has specific behavior we need to address when WIN32 is not defined.
+https://cygwin.com/cygwin-ug-net/using-textbinary.html
+For write we want our output to have line endings of LF and be compatible with
+other Cygwin utilities. For read we want to handle input that may have line
+endings either CRLF or LF so 't' is appropriate.
+*/
+#define FOPEN_READTEXT "rt"
+#define FOPEN_WRITETEXT "w"
+#define FOPEN_APPENDTEXT "a"
+#else
+#define FOPEN_READTEXT "r"
+#define FOPEN_WRITETEXT "w"
+#define FOPEN_APPENDTEXT "a"
 #endif
 
 #endif /* LIBSSH2_H */
