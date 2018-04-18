@@ -41,6 +41,14 @@
 
 /*******************************************************************/
 /*
+ * mbedTLS backend: Global context handles
+ */
+
+static mbedtls_entropy_context  _libssh2_mbedtls_entropy;
+static mbedtls_ctr_drbg_context _libssh2_mbedtls_ctr_drbg;
+
+/*******************************************************************/
+/*
  * mbedTLS backend: Generic functions
  */
 
@@ -237,6 +245,15 @@ _libssh2_mbedtls_bignum_init(void)
     }
 
     return bignum;
+}
+
+void
+_libssh2_mbedtls_bignum_free(_libssh2_bn *bn)
+{
+    if (bn) {
+        mbedtls_mpi_free(bn);
+        mbedtls_free(bn);
+    }
 }
 
 static int

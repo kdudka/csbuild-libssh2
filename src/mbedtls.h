@@ -81,14 +81,6 @@
 
 /*******************************************************************/
 /*
- * mbedTLS backend: Global context handles
- */
-
-mbedtls_entropy_context  _libssh2_mbedtls_entropy;
-mbedtls_ctr_drbg_context _libssh2_mbedtls_ctr_drbg;
-
-/*******************************************************************/
-/*
  * mbedTLS backend: Generic functions
  */
 
@@ -315,7 +307,7 @@ mbedtls_ctr_drbg_context _libssh2_mbedtls_ctr_drbg;
 #define _libssh2_bn_bits(bn) \
   mbedtls_mpi_bitlen(bn)
 #define _libssh2_bn_free(bn) \
-  mbedtls_mpi_free(bn)
+  _libssh2_mbedtls_bignum_free(bn)
 
 
 /*******************************************************************/
